@@ -35,6 +35,52 @@ export default function ChatBot() {
     console.log(chatHistory)
   };
 
+  const getBotResponse = async (prompt: string | null): Promise<string | null> => {
+    if (prompt === null) return null;
+  
+    const apiUrl = chat === "ChatBot Furia"
+      ? "http://localhost:8080/chat/ask"
+      : "http://localhost:8080/chat/fallen";
+  
+    try {
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+        },
+        body: prompt,
+      });
+  
+      const data = await res.text();
+      return data;
+    } catch (e) {
+      console.error("Erro:", e);
+      return null;
+    }
+  };
+
+  const fetchData = async () => {
+    const res = await getBotResponse(message?.text ?? null);
+    if (res) {
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          text: res,
+          userName: chat,
+          timeStamp: new Date().toUTCString(),
+        },
+      ]);
+      setBotResponseIsLoading(false)
+    }
+  };
+
+  useEffect(() => {
+    if (message !== null) {
+      setBotResponseIsLoading(true)
+      fetchData();
+    }
+  }, [message]);
+
   useEffect(() => { //verifica se tem algo salvo no storage do navegador na primeira vez que o código
     setChatHistory([])
     const storagedHistory = localStorage.getItem(chat)
