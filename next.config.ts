@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     domains: [
       'upload.wikimedia.org',
       'profilerr.net',
-      // adicione outros domínios aqui conforme necessário
+      'scontent-for2-1.xx.fbcdn.net'
     ],
   },
 };
